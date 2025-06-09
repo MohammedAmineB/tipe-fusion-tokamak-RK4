@@ -1,0 +1,61 @@
+
+# === Simulation Python : Trajectoire d’un ion dans un champ magnétique ===
+# Ce code utilise la méthode de Runge-Kutta 4e ordre pour simuler
+# le confinement magnétique d’un ion dans un champ uniforme (modèle Tokamak simplifié).
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# === Constantes physiques ===
+q = 1.6e-19       # Charge de l'ion (Coulombs)
+m = 1.67e-27      # Masse de l'ion (kg), ici un proton
+Bz = 1.0          # Intensité du champ magnétique (Tesla)
+dt = 1e-9         # Pas de temps (seconde)
+steps = 2000      # Nombre d'itérations (précision de la simulation)
+
+# === Conditions initiales ===
+r = np.array([0.0, 0.0, 0.0], dtype=float)         # Position initiale (x, y, z)
+v = np.array([1e5, 0.0, 1e5], dtype=float)         # Vitesse initiale (m/s)
+
+# === Définition de la force de Lorentz ===
+# F = q (v × B) / m, où B = champ magnétique uniforme
+def lorentz_force(v, B):
+    return q * np.cross(v, B) / m
+
+# === Champ magnétique constant (z direction) ===
+B = np.array([0.0, 0.0, Bz], dtype=float)
+
+# === Simulation avec méthode de Runge-Kutta 4e ordre ===
+positions = [r.copy()]
+
+for _ in range(steps):
+    k1v = dt * lorentz_force(v, B)
+    k1r = dt * v
+
+    k2v = dt * lorentz_force(v + 0.5 * k1v, B)
+    k2r = dt * (v + 0.5 * k1v)
+
+    k3v = dt * lorentz_force(v + 0.5 * k2v, B)
+    k3r = dt * (v + 0.5 * k2v)
+
+    k4v = dt * lorentz_force(v + k3v, B)
+    k4r = dt * (v + k3v)
+
+    v += (k1v + 2*k2v + 2*k3v + k4v) / 6
+    r += (k1r + 2*k2r + 2*k3r + k4r) / 6
+
+    positions.append(r.copy())
+
+# === Conversion en tableau numpy ===
+positions = np.array(positions)
+
+# === Affichage de la trajectoire 3D ===
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111, projection='3d')
+ax.plot(positions[:, 0], positions[:, 1], positions[:, 2], lw=1.2, color='blue')
+ax.set_title("Trajectoire d'un ion dans un champ magnétique uniforme (simulation RK4)")
+ax.set_xlabel("x (m)")
+ax.set_ylabel("y (m)")
+ax.set_zlabel("z (m)")
+plt.tight_layout()
+plt.show()
