@@ -1,0 +1,46 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import solve_ivp
+
+# Paramètres
+eta = 1e-3   # résistivité
+L = 1.0      # longueur d'échelle
+Nx = 100
+x = np.linspace(-L, L, Nx)
+dx = x[1] - x[0]
+
+# Profil champ magnétique initial B0(x)
+B0 = x  # simple champ en gradient linéaire
+
+# Fonction qui approxime la dérivée spatiale seconde (d2/dx2)
+def d2dx2(f, dx):
+    d2f = np.zeros_like(f)
+    d2f[1:-1] = (f[2:] - 2*f[1:-1] + f[:-2]) / dx**2
+    # conditions aux limites simples (bord fixe)
+    d2f[0] = d2f[1]
+    d2f[-1] = d2f[-2]
+    return d2f
+
+# Équation d'évolution de psi (potentiel vecteur perturbé)
+def tearing_mode(t, psi):
+    d2psi = d2dx2(psi, dx)
+    # terme de diffusion résistive
+    dpsi_dt = eta * d2psi
+    return dpsi_dt
+
+# Conditions initiales : petite perturbation sinusoïdale
+psi0 = 1e-4 * np.sin(np.pi * x / L)
+
+# Intégration temporelle
+t_span = (0, 10)
+sol = solve_ivp(tearing_mode, t_span, psi0, t_eval=np.linspace(*t_span, 200))
+
+# Affichage des perturbations à différents temps
+plt.figure(figsize=(8,5))
+for i in range(0, len(sol.t), 40):
+    plt.plot(x, sol.y[:, i], label=f't={sol.t[i]:.1f}')
+plt.title("Évolution simplifiée du mode tearing")
+plt.xlabel("Position x")
+plt.ylabel("Perturbation psi")
+plt.legend()
+plt.show()
