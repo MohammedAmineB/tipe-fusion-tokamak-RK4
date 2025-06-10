@@ -16,14 +16,14 @@ Visualiser le **mouvement spiralé** d’un ion soumis à la **force de Lorentz*
 
 ## 📂 Fichiers du dépôt
 
-- `Code_Python_TIPE_Confinement_Magnetique_Commenté.txt`  
-  → Code Python complet avec commentaires pédagogiques
-- `simulation_confinement_magnetique_rk4.png`  
-  → Trajectoire hélicoïdale générée par la simulation
+- `Code_Python_TIPE_Confinement_Magnetique_Commenté.txt`
+ → Code Python complet avec commentaires pédagogiques
+- `simulation_confinement_magnetique_rk4.png`
+ → Trajectoire hélicoïdale générée par la simulation
 - `trinket_plot.png`
-  → Trinket plot
+ → Trinket plot
 - `Exemple Python ultra simplifié — Tearing mode en 1D (modèle conceptuel)`
-  → Tearing mode en 1D (modèle conceptuel)
+ → Tearing mode en 1D (modèle conceptuel)
 
 ## 📈 Résultat attendu
 
